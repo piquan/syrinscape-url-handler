@@ -1,0 +1,126 @@
+#! /usr/bin/env python3
+
+# Copyright 2021 Joel Ray Holveck <joelh@piquan.org>
+#
+# This work is not a product of Syrinscape. It is purely my own work.
+# Don't blame them if you have problems; blame me.
+
+import base64
+import logging
+import os.path
+import sys
+import tempfile
+import urllib.parse
+
+import defusedxml.ElementTree
+
+PRODUCT="Syrinscape Sci-Fi Player"
+
+def get_uri_data_path_linux():
+    # The URI handler data path is, for me,
+    # ~/.config/unity3d/Syrinscape/Syrinscape Sci-Fi Player/prefs/URI
+    # but can presumably change in some cases.  I say this because
+    # the path is saved in the PlayerPrefs.
+    #
+    # The PlayerPrefs are stored in the same directory, in Linux, but
+    # in a different place on other platforms.  Here, I only do the
+    # Linux thing.
+    #
+    # The docs say PlayerPrefs is in ~/.config/unity3d, but a quick
+    # test shows that it will honor $XDG_CONFIG_HOME.  So we will too.
+    xdg_config_home = os.environ.get("XDG_CONFIG_HOME",
+                                      os.path.expanduser("~/.config"))
+    prefs_filename = os.path.join(xdg_config_home, "unity3d", "Syrinscape",
+                                  PRODUCT, "prefs")
+    logging.debug("Syrinscape prefs path: %s", prefs_filename)
+    # I'm not trying to catch errors here; there's nothing useful I can
+    # do with them except report the errors, and that's the default
+    # behavior.
+    prefs_dom = defusedxml.ElementTree.parse(prefs_filename)
+    uri_data_path_b64 = \
+        prefs_dom.findtext('./pref[@name="URIDataPath"]')
+    # XXX In my case, I don't have a "+" or "/" in the base64 encoding
+    # of my URIDataPath.  That means that I'm not positive if this
+    # is using the standard encoding, or the urlsafe encoding.
+    uri_data_path = base64.b64decode(uri_data_path_b64, validate=True)
+    return uri_data_path
+
+def get_uri_data_path():
+    uri_data_path = get_uri_data_path_linux()
+    logging.debug("Syrinscape command path: %s", uri_data_path)
+    return uri_data_path
+
+def send_uri(uri):
+    logging.debug("Sending command string: %s", uri)
+    uri_data_path = get_uri_data_path()
+    # We want to be able to completely write the file before we move
+    # it into the URI directory, since once it appears there, it can
+    # be read and deleted by Syrinscape.  To do that, we create the
+    # file in the parent directory (which is presumably on the same
+    # filesystem), and then move it atomically into the URI directory.
+    # We specify the directory by joining ".." instead of using dirpath,
+    # to handle the case when there's still a trailing slash.
+    cmdfd = None
+    cmdfilename = None
+    tmpdir = os.path.join(uri_data_path, b"..")
+    try:
+        (cmdfd, cmdfilename) = tempfile.mkstemp(dir=tmpdir)
+        logging.debug("Writing temporary file %s", cmdfilename)
+        with open(cmdfd, 'w') as cmdfh:
+            cmdfd = None
+            cmdfh.write(uri)
+        # Now that the file has been written, let's move it into the
+        # directory.  There is an infintessimal chance that this
+        # rename will overwrite an existing command; we don't worry
+        # about that, since the alternatives are annoying and depend
+        # on filesystem features (like hard links).
+        new_name = os.path.join(uri_data_path, os.path.basename(cmdfilename))
+        logging.debug("Moving to command file %s", new_name)
+        os.rename(cmdfilename, new_name)
+        cmdfilename = None
+    finally:
+        if cmdfilename is not None:
+            os.unlink(cmdfilename)
+        if cmdfd is not None:
+            os.close(cmdfd)
+    # We could wait for the command file to be deleted, but I'm not
+    # really sure there would be a point.  Just return.
+            
+def clean_url(url):
+    # We go through a full parse and reconstruction of the
+    # standardized parts of the URL, so we can cleanly get rid of the
+    # scheme and netloc.  (The parsing rules have corner cases, so I
+    # don't want to assume.)
+    orig_parse = urllib.parse.urlsplit(url)
+    # Setting netloc='' also eliminates its derived components: username,
+    # password, hostname, and port.
+    clean_parse = orig_parse._replace(scheme='', netloc='')
+    # The cleaned URL may, at this point, have a leading /.  We need to
+    # remove it.  (We do need to leave any trailing /, though.)
+    clean_str = clean_parse.geturl()
+    if clean_str.startswith('/'):
+        clean_str = clean_str[1:]
+    return clean_str
+    
+def handle_url(url):
+    logging.info("Sending Syrinscape command: %s", url)
+    send_uri(clean_url(url))
+    logging.debug("URL complete: %s", url)
+
+def main():
+    for url in sys.argv[1:]:
+        handle_url(url)
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    main()
+    
+#
+#[Desktop Entry]
+#Name=Emacs Client
+#Exec=emacsclient %u
+#Icon=emacs-icon
+#Type=Application
+#Terminal=false
+#MimeType=x-scheme-handler/org-protocol;
+#%U
