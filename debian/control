@@ -1,0 +1,16 @@
+Source: syrinscape-uri-handler
+Section: sound
+Priority: optional
+Maintainer: Joel Ray Holveck <joelh@piquan.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.0
+Homepage: https://github.com/piquan/syrinscape-uri/handler
+Vcs-Browser: https://github.com/piquan/syrinscape-uri-handler
+Vcs-Git: https://github.com/piquan/syrinscape-uri-handler.git
+Rules-Requires-Root: no
+
+Package: syrinscape-uri-handler
+Architecture: all
+Depends: python3 (>= 3.9), ${misc:Depends}
+Description: Send syrinscape:/// URLs to a running player
+ This is an independent work, not an official Syrinscape product
