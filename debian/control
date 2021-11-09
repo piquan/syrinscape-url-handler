@@ -11,6 +11,6 @@ Rules-Requires-Root: no
 
 Package: syrinscape-uri-handler
 Architecture: all
-Depends: python3 (>= 3.9), ${misc:Depends}
-Description: Send syrinscape:/// URLs to a running player
+Depends: python3 (>= 3.9), python3-defusedxml (>= 0.6.0), shared-mime-info (>= 2.0), ${misc:Depends}
+Description: Send syrinscape-*:/// URLs to a running player
  This is an independent work, not an official Syrinscape product

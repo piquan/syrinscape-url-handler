@@ -1,3 +1,11 @@
+syrinscape-uri-handler (0.0.2-1) UNRELEASED; urgency=medium
+
+  * Merge upstream 0.0.2
+
+  * Add dependency on Python defusedxml
+
+ -- Joel Ray Holveck <joelh@piquan.org>  Mon, 08 Nov 2021 17:17:46 -0800
+
 syrinscape-uri-handler (0.0.1-1) UNRELEASED; urgency=medium
 
   * Initial release
