@@ -6,4 +6,4 @@ Exec=@PREFIX@/libexec/syrinscape-uri-handler/syrinscape-uri-handler %U
 Terminal=false
 NoDisplay=true
 StartupNotify=false
-MimeType=x-scheme-handler/syrinscape
+MimeType=x-scheme-handler/syrinscape-sci-fi;x-scheme-handler/syrinscape-fantasy
