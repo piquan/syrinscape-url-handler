@@ -33,10 +33,10 @@ install: install-files update-mime
 
 .PHONY: uninstall-files
 uninstall-files:
-	rm -f $(DESTDIR)$(PREFIX)/libexec/syrinscape-uri-handler/syrinscape-uri-handler
-	rmdir --ignore-fail-on-non-empty $(DESTDIR)$(PREFIX)/libexec/syrinscape-uri-handler
 	rm -f $(DESTDIR)$(PREFIX)/share/man/man1/syrinscape-uri-handler.1
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/syrinscape-uri-handler.desktop
+	rm -f $(DESTDIR)$(PREFIX)/libexec/syrinscape-uri-handler/syrinscape-uri-handler
+	rmdir --ignore-fail-on-non-empty $(DESTDIR)$(PREFIX)/libexec/syrinscape-uri-handler
 
 .PHONY: uninstall
 uninstall: uninstall-files update-mime
