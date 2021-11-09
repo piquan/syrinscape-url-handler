@@ -4,7 +4,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SYRINSCAPE-URI-HANDLER 1 "November  7 2021"
+.TH SYRINSCAPE-URI-HANDLER 1 "November  8 2021"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -18,7 +18,7 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .SH NAME
-syrinscape-uri-handler \- forward syrinscape:// URIs to the player
+syrinscape-uri-handler \- forward syrinscape-*:// URIs to the player
 .SH SYNOPSIS
 .B syrinscape-uri-handler
 .RI [ options ] " uri" ...
@@ -32,16 +32,17 @@ utility.
 .\" respectively.
 \fBsyrinscape-uri-handler\fP is not meant to be invoked directly.  Instead,
 whenever an application needs to handle a URI starting with
-\fBsyrinscape:\fP, it will run \fBsyrinscape-uri-handler\fP.  This program
+\fBsyrinscape-fantasy:\fP or \fBsyrinscape-sci-fi:\fP, it will run \fBsyrinscape-uri-handler\fP.  This program
 will write the URL to a special location where the Syrinscape player will
 read it.
 .PP
 Once installed on the system, any normal program (such as web
-browsers) should see it as the correct handler for \fBsyrinscape:\fP
+browsers) should see it as the correct handler for \fBsyrinscape-*:\fP
 URIs.
 .SH FILES
 .TP
 .B ~/.config/unity3d/Syrinscape/Syrinscape Sci-Fi Player/URI/
+.B ~/.config/unity3d/Syrinscape/Syrinscape Fantasy Player/URI/
 The default location for command files to be placed.
 .SH COPYRIGHT
 This program is Copyright 2021 by Joel Ray Holveck.
