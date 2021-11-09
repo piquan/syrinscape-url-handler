@@ -43,8 +43,8 @@ uninstall: uninstall-files update-mime
 
 .PHONY: dist
 dist:
-	mkdir /tmp/syrinscape-uri-handler-0.0.1
-	cp $(DISTFILES) /tmp/syrinscape-uri-handler-0.0.1
-	tar cvzf syrinscape-uri-handler-0.0.1.tar.gz --owner=root:0 --group=root:0 -C /tmp syrinscape-uri-handler-0.0.1
-	rm -r /tmp/syrinscape-uri-handler-0.0.1
-	mv syrinscape-uri-handler-0.0.1.tar.gz ../syrinscape-uri-handler_0.0.1.orig.tar.gz
+	mkdir /tmp/syrinscape-uri-handler-0.0.2
+	cp $(DISTFILES) /tmp/syrinscape-uri-handler-0.0.2
+	tar cvzf syrinscape-uri-handler-0.0.2.tar.gz --owner=root:0 --group=root:0 -C /tmp syrinscape-uri-handler-0.0.2
+	rm -r /tmp/syrinscape-uri-handler-0.0.2
+	mv syrinscape-uri-handler-0.0.2.tar.gz ../syrinscape-uri-handler_0.0.2.orig.tar.gz
